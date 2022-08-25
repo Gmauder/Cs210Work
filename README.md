@@ -8,7 +8,7 @@ I am the author of all original work committed to this repository, as identified
 
 + **Full Name:** Glen Mauder
 + **University Email:** gem00018@mix.wvu.edu
-+ **Student ID:** 800365912
++ **Student ID:** 800365912 
 
 If I am pair programming, my co-author's contributions are attributed in the comments of each file.
 
