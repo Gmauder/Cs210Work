@@ -21,6 +21,10 @@ public enum FieldType {
         return name();
     }
 
+	public int getTypeNumber() {
+		return type;
+	}
+
     public static FieldType valueOf(int type) {
         for (FieldType it: FieldType.class.getEnumConstants()) {
             if (type == it.type)
