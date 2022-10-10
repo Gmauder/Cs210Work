@@ -50,7 +50,7 @@ public abstract class AbstractDFS {
 	 * <p>
 	 * You may reassign this when debugging.
 	 */
-	public static final int TIMEOUT_MILLIS = 100;
+	public static final int TIMEOUT_MILLIS = 1000;
 
 	/**
 	 * The percentage of puts, gets, and removes
