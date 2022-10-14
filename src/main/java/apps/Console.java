@@ -93,6 +93,7 @@ public class Console {
 			
 			for(String query: queries) {
 				query = query.strip();
+				
 				if(!query.isBlank()) {
 				if(query.startsWith("--")){
 					
@@ -100,6 +101,7 @@ public class Console {
 				else {
 				//if the query is blank, skip to the next run of the loop
 				//print the query
+					out.println("Query: " + query);
 				if(query.toLowerCase().equals("exit")) {
 					runs = false;
 					break;
@@ -136,6 +138,7 @@ public class Console {
 			}
 		}
 			}
+				out.println();
 			}
 			}
 			}
