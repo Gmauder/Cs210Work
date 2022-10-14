@@ -37,7 +37,7 @@ public class Sandbox {
 		
 		
 		Table table2 = new SearchTable(
-				"sandbox_1",
+				"sandbox_2",
 				List.of("letter", "order", "vowel"),
 				List.of(STRING, INTEGER, BOOLEAN),
 				0
@@ -53,5 +53,9 @@ public class Sandbox {
 			table2.put(Arrays.asList("N/A", null, null));
 
 			System.out.println(table2);
+			
+			
 	}
+	
+	
 }
