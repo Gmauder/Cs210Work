@@ -34,5 +34,24 @@ public class Sandbox {
 		table.put(Arrays.asList("N/A", null, null));
 
 		System.out.println(table);
+		
+		
+		Table table2 = new SearchTable(
+				"sandbox_1",
+				List.of("letter", "order", "vowel"),
+				List.of(STRING, INTEGER, BOOLEAN),
+				0
+			);
+
+			table2.put(List.of("alphaxxxxxxxxxxx", 1, true));
+			table2.put(List.of("beta", 2, false));
+			table2.put(List.of("gamma", 3, false));
+			table2.put(List.of("delta", 4, false));
+			table2.put(List.of("tau", 19, false));
+			table2.put(List.of("pi", 16, false));
+			table2.put(List.of("omega", 24, true));
+			table2.put(Arrays.asList("N/A", null, null));
+
+			System.out.println(table2);
 	}
 }

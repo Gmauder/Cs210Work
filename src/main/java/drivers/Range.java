@@ -74,9 +74,11 @@ public class Range implements Driver {
 		);
 
 		for (int i = 0; i < upper; i++) {
-			List<Object> row = new LinkedList<>();
-			row.add(i);
-			resultSet.put(row);
+			//List<Object> row = new LinkedList<>();
+			//row.add(i);
+			//resultSet.put(row);
+			
+			resultSet.put(List.of(i));
 		}
 
 		return resultSet;

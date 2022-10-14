@@ -12,7 +12,7 @@ import sql.FieldType;
  * Implements a search-based table
  * using a list data structure.
  */
-public class SearchTable extends Table {
+public class SearchTable extends PrettyTable {
 	
 	//Map : { key: value, key: value, key: value}
 	//Map : { "A": 1, "B": 2, "C": 3}

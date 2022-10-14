@@ -25,7 +25,7 @@ import sql.FieldType;
  * Implements a hash-based table
  * using a directory tree structure.
  */
-public class HashFileTable extends Table {
+public class HashFileTable extends PrettyTable {
 	private Path root;
 	private FileChannel schema, metadata;
 	

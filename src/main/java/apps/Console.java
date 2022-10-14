@@ -28,14 +28,52 @@ public class Console {
 			final Scanner in = new Scanner(System.in);
 			final PrintStream out = System.out;
 		) {
+			//REPL
+			//read-evaluate-print-loop
+			
+			{//TO DO: make this a loop which stops on input EXIT
+				
+			//result tables always start with an underscore
+				
 			out.print(">> ");
 
-			String query = in.nextLine();
+			// echo "hello, world!" 
+			// echo "hello, world!"; echo "goodbye, world!" 
+			
+			String script = in.nextLine().strip();
+			
+			//if the input is a comment, skip to next run of REPL
+			
+			String[] queries = script.split(";");
+			// >> -- this is a comment
+			
+			// echo "hi"; echo "bye"
+			//
+			//Query: echo "hi"
+			//Result: hi
+			//
+			//Query: echo "bye"
+			//Result: bye
+			
+			for(String query: queries) {
+				query = query.strip();
+				//if the query is blank, skip to the next run of the loop
+				//print the query
+				if(query.toLowerCase().equals("exit")) {
+					break;
+				}
+				if(!query.isBlank()) {
 			try {
-				out.println("Result: " + db.interpret(query));
+				Object res = db.interpret(query);
+				//use instanceof to check the type
+				//branch accordingly
+				out.println("Result: " + res);
 			}
 			catch (QueryError e) {
 				out.println("Error: " + e);
+			}
+		}
+			}
 			}
 		}
 		catch (IOException e) {
