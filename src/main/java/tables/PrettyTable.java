@@ -91,7 +91,7 @@ public abstract class PrettyTable extends Table {
 					sb.append(" ");
 				}
 				
-				for(int n = 0; n < maxLength * (getColumnNames().size()  - 1); n++) {
+				for(int n = 0; n < (maxLength * (getColumnNames().size()  - 1)) + getColumnNames().size() - 1; n++) {
 					sb.append(" ");
 				}
 				
@@ -164,9 +164,10 @@ public abstract class PrettyTable extends Table {
 					}
 					else {
 						//sb.append("  ");
+						sb.append("\"");
 						sb.append(tempList.get(x).toString().substring(0, maxLength - 7));
 						sb.append("...");
-						sb.append("   ");
+						sb.append("  ");
 						
 					}
 					
