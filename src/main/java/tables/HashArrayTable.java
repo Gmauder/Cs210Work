@@ -60,7 +60,6 @@ public class HashArrayTable extends PrettyTable {
 		for (int j = 0; j < array.length; j++) // OA
 		{
 			int i = wrap(hash + j * j * (j % 2 == 0 ? +1 : -1)); // ASQP
-
 			if (array[i] == TOMBSTONE) {
 				if (t == -1) {
 					t = i;
@@ -101,6 +100,7 @@ public class HashArrayTable extends PrettyTable {
 
 				// if necessary, rehash
 				if (loadFactor() > LOAD_FACTOR_BOUND) {
+					//System.out.println("rehashing");
 					rehash();
 				}
 				return false;
@@ -135,14 +135,14 @@ public class HashArrayTable extends PrettyTable {
 				// put a tombstone at position i
 				// adjust the metadata
 				// fingerprint increases/decreases
-
 				return true;
 			}
 			// not yet a hit or miss, so continue
 		}
 
 		//throw new IllegalStateException();
-		return false;
+
+				throw new IllegalStateException("could not add row " + row.toString());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -172,6 +172,7 @@ public class HashArrayTable extends PrettyTable {
 				
 				array[i] = TOMBSTONE;
 				size--;
+				contamination++;
 				fingerprint -= old.hashCode();
 
 				return true;
@@ -231,7 +232,7 @@ public class HashArrayTable extends PrettyTable {
 	public void rehash() {
 		
 		Object[] backup = array;
-		array = new Object[nextPrime(array.length)];
+		array = new Object[nextPrime(backup.length)];
 		size = 0;
 		contamination = 0;
 		fingerprint = 0;
@@ -265,7 +266,7 @@ public class HashArrayTable extends PrettyTable {
 				next = next + 4;
 			}
 		
-		
+		//System.out.println(next);
 		return next;
 		// let next be twice the prev plus 1
 
