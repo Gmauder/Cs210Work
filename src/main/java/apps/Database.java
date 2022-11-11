@@ -10,10 +10,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import drivers.CreateTable;
+import drivers.DropTable;
 import drivers.Echo;
 import drivers.Macros;
 import drivers.Range;
 import drivers.ShowTable;
+import drivers.ShowTables;
 import sql.Driver;
 import sql.QueryError;
 import tables.SearchTable;
@@ -90,12 +93,10 @@ public class Database implements Closeable {
 	 * @return the dropped table, if any.
 	 */
 	public Table drop(String tableName) {
-		if(!exists(tableName))
-			return null;
-		
-		var table = find(tableName);
-		tables.remove(table);
-		return table;
+		for(var i = 0; i < tables.size(); i++)
+			if(tables.get(i).getTableName().equals(tableName))
+				return tables.remove(i);
+		return null;
 	}
 
 	/**
@@ -155,6 +156,18 @@ public class Database implements Closeable {
 		Driver show = new ShowTable();
 		if (show.parse(query))
 			return show.execute(this);
+		
+		Driver shows = new ShowTables();
+		if (shows.parse(query))
+			return shows.execute(this);
+		
+		Driver drop = new DropTable();
+		if (drop.parse(query))
+			return drop.execute(this);
+		
+		Driver create = new CreateTable();
+		if (create.parse(query))
+			return create.execute(this);
 		
 		Driver macro = new Macros();
 		if (macro.parse(query))
