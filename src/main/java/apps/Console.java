@@ -55,8 +55,8 @@ public class Console {
 				table.put(List.of("delta", 4, false));
 				table.put(List.of("tau", 19, false));
 				table.put(List.of("pi", 16, false));
-				table.put(List.of("omega", 24, true));
-				table.put(Arrays.asList("N/A", null, null));
+				table.put(List.of("omega", 24, false));
+				//table.put(Arrays.asList("N/A", null, null));
 
 				db.create(table);
 				//System.out.println(table);

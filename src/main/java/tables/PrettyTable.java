@@ -36,6 +36,11 @@ public abstract class PrettyTable extends Table {
 			
 			
 		});
+		
+		int prime = getPrimaryIndex();
+		
+		
+		
 		int hoBorder = maxLength * getColumnNames().size() + (1 + getColumnNames().size());
 		
 		for(int z = 0; z < hoBorder; z++) {
@@ -108,6 +113,14 @@ public abstract class PrettyTable extends Table {
 		sb.append("\n");
 		
 		sb.append("| ");
+		
+	
+		
+		
+		
+		
+		
+		
 		for(String colName: getColumnNames()) {
 			
 			if(colName.length() < maxLength) {
@@ -116,10 +129,16 @@ public abstract class PrettyTable extends Table {
 				}
 			}
 			sb.append(colName);
+			if(prime == getColumnNames().indexOf(colName)) {
+				sb.append("*");
+			}
 			
 			for(int n = colName.length() + (maxLength - colName.length()) / 2; n < maxLength - 1; n ++) {
 				sb.append(" ");
 			}
+			if(prime == getColumnNames().indexOf(colName)) {
+				sb.deleteCharAt(sb.length()-1);
+				}
 			if(!colName.equals(getColumnNames().get(getColumnNames().size() - 1)))
 			sb.append(" |");
 			

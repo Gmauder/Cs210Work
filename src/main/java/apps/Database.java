@@ -10,11 +10,17 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import drivers.AddColumn;
 import drivers.CreateTable;
+import drivers.DescribeTable;
+import drivers.DropColumn;
 import drivers.DropTable;
 import drivers.Echo;
 import drivers.Macros;
+import drivers.ModifyPrimary;
 import drivers.Range;
+import drivers.RenameColumn;
+import drivers.RenameTable;
 import drivers.ShowTable;
 import drivers.ShowTables;
 import sql.Driver;
@@ -168,6 +174,30 @@ public class Database implements Closeable {
 		Driver create = new CreateTable();
 		if (create.parse(query))
 			return create.execute(this);
+		
+		Driver describe = new DescribeTable();
+		if (describe.parse(query))
+			return describe.execute(this);
+		
+		Driver addcol = new AddColumn();
+		if (addcol.parse(query))
+			return addcol.execute(this);
+		
+		Driver dropcol = new DropColumn();
+		if (dropcol.parse(query))
+			return dropcol.execute(this);
+		
+		Driver modprime = new ModifyPrimary();
+		if (modprime.parse(query))
+			return modprime.execute(this);
+		
+		Driver renamecol = new RenameColumn();
+		if (renamecol.parse(query))
+			return renamecol.execute(this);
+		
+		Driver renametable = new RenameTable();
+		if (renametable.parse(query))
+			return renametable.execute(this);
 		
 		Driver macro = new Macros();
 		if (macro.parse(query))
