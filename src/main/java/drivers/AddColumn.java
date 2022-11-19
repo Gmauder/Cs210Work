@@ -83,7 +83,7 @@ public class AddColumn implements Driver {
 		String w[] = place.split(" ");
 		if(w[0].equalsIgnoreCase("FIRST")){
 			
-			colNames.add(0, elems[0]);
+			colNames.add(0, w[0]);
 			prime++;
 			
 			if(elems[1].toUpperCase().equals("INTEGER")) {
@@ -96,7 +96,7 @@ public class AddColumn implements Driver {
 			if(elems[1].toUpperCase().equals("BOOLEAN")) {
 				colTypes.add(0, BOOLEAN);
 				for(var row : rows) {
-					row.add(0, true);
+					row.add(0, false);
 				}
 			}
 			
@@ -127,26 +127,26 @@ public class AddColumn implements Driver {
 			}
 		}
 		else if (w[0].equalsIgnoreCase("BEFORE")){
-			colNames.add(colNames.indexOf(w[1]) - 1, elems[0]);
+			colNames.add(colNames.indexOf(w[1]), elems[0]);
 			
 			for(var row : rows) {
 				row.add(colNames.indexOf(w[1]) - 1, null);
 			}
 			
-			if((colNames.indexOf(w[1]) - 1) < prime) {
+			if((colNames.indexOf(w[1])) < prime) {
 				prime++;
 			}
 			
 			if(elems[1].toUpperCase().equals("INTEGER")) {
-				colTypes.add(colNames.indexOf(w[1]) - 1, INTEGER);
+				colTypes.add(colNames.indexOf(w[1]), INTEGER);
 			}
 			
 			if(elems[1].toUpperCase().equals("BOOLEAN")) {
-				colTypes.add(colNames.indexOf(w[1]) - 1, BOOLEAN);
+				colTypes.add(colNames.indexOf(w[1]), BOOLEAN);
 			}
 			
 			if(elems[1].toUpperCase().equals("STRING")) {
-				colTypes.add(colNames.indexOf(w[1]) - 1, STRING);
+				colTypes.add(colNames.indexOf(w[1]), STRING);
 			}
 		}
 		else {

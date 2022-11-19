@@ -82,8 +82,14 @@ public class ModifyPrimary implements Driver {
 		int temp = colNames.indexOf(colName);
 		
 		for(var row : rows) {
+			
 			if(row.get(temp) == null) {
 				throw new QueryError("You can not have a primary row that contains nulls");
+			}
+			for(int i = 0; i < rows.indexOf(row) -1; i++) {
+				if(row.get(temp) == rows.get(i).get(temp)) {
+					throw new QueryError("You cannot have duplicate values in a primary column");
+				}
 			}
 		}
 		
@@ -95,9 +101,15 @@ public class ModifyPrimary implements Driver {
 				prime
 			);
 		
+		
+		
+		System.out.println();
+		
 		db.drop(tableName);
 		db.create(table1);
-	table1.putAll(rows);
+		table1.putAll(rows);
+		
+		
 
 		return table1;
 	}

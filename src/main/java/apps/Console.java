@@ -44,19 +44,19 @@ public class Console {
 			
 			Table table = new SearchTable(
 					"sandbox_1",
-					List.of("letter", "order", "vowel"),
-					List.of(STRING, INTEGER, BOOLEAN),
+					List.of("letter", "order", "vowel", "numbers"),
+					List.of(STRING, INTEGER, BOOLEAN, INTEGER),
 					0
 				);
 
-				table.put(List.of("alpha", 1, true));
-				table.put(List.of("beta", 2, false));
-				table.put(List.of("gamma", 3, false));
-				table.put(List.of("delta", 4, false));
-				table.put(List.of("tau", 19, false));
-				table.put(List.of("pi", 16, false));
-				table.put(List.of("omega", 24, false));
-				//table.put(Arrays.asList("N/A", null, null));
+				table.put(List.of("alpha", 1, true, 1));
+				table.put(List.of("beta", 2, false, 2));
+				table.put(List.of("gamma", 3, false, 3));
+				table.put(List.of("delta", 4, false, 4));
+				table.put(List.of("tau", 19, false, 5));
+				table.put(List.of("pi", 16, false, 6));
+				table.put(List.of("omega", 24, false, 7));
+				table.put(Arrays.asList("N/A", null, null, 8));
 
 				db.create(table);
 				//System.out.println(table);

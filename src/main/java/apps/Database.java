@@ -16,6 +16,7 @@ import drivers.DescribeTable;
 import drivers.DropColumn;
 import drivers.DropTable;
 import drivers.Echo;
+import drivers.InsertInto;
 import drivers.Macros;
 import drivers.ModifyPrimary;
 import drivers.Range;
@@ -198,6 +199,10 @@ public class Database implements Closeable {
 		Driver renametable = new RenameTable();
 		if (renametable.parse(query))
 			return renametable.execute(this);
+		
+		Driver insert = new InsertInto();
+		if (insert.parse(query))
+			return insert.execute(this);
 		
 		Driver macro = new Macros();
 		if (macro.parse(query))

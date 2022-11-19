@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import apps.Database;
 import sql.Driver;
+import sql.FieldType;
 import sql.QueryError;
 import tables.HashArrayTable;
 import tables.SearchTable;
@@ -53,6 +54,8 @@ public class DescribeTable implements Driver {
 		if (table == null)
 			throw new QueryError("Missing table <%s>".formatted(tableName));
 		
+		List<String> columnNames = table.getColumnNames();
+		List<FieldType> columnTypes = table.getColumnTypes();
 		
 		
 		var rows = new ArrayList<>(table.rows());
@@ -69,15 +72,12 @@ public class DescribeTable implements Driver {
 				//return 0;
 			}
 		});
+		
 		int counter = 0;
-		for(List<Object> row : rows) {
-		//counter++;
-		row.add(0, counter);
-		if(row.get(2) != null) {
-		row.set(2, row.get(2).toString());
-		}
-		resultSet.put(row);
-		counter++;
+		ArrayList<Object> colrow = new ArrayList<Object>();
+		for(var colName : columnNames) {
+			resultSet.put(List.of(counter, columnNames.get(counter), columnTypes.get(counter).toString(),(boolean)(counter==table.getPrimaryIndex())));
+			counter++;
 		}
 
 		return resultSet;
