@@ -4,6 +4,7 @@ import static sql.FieldType.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +19,8 @@ import tables.Table;
 
 public class CreateTable implements Driver {
 	private static final Pattern pattern = Pattern.compile(
-			//CREATE\s*TABLE\s*([a-z][a-z0-9_]*)\s*\(((?:\s*,?\s*(?:(?:[a-z]|\d)+) (?:(?:STRING)|(?:INTEGER)|(?:BOOLEAN))(?: PRIMARY)?)*)\s*\)
-		"CREATE\\s*TABLE\\s*([a-z][a-z0-9_]*)\\s*\\(((?:\\s*,?\\s*(?:(?:[a-z]|\\d)+) (?:(?:STRING)|(?:INTEGER)|(?:BOOLEAN))(?: PRIMARY)?)*)\\s*\\)",
+			//CREATE\s*TABLE\s*([a-z][a-z0-9_]*)\s*\(((?:\s*,?\s*(?:(?:[a-z]|\d)+) (?:(?:STRING)|(?:DECIMAL)|(?:DECIMAL\s*\(([0-9]+)\)?)|(?:INTEGER(?:\s*AUTO_INCREMENT)?)|(?:BOOLEAN))(?: PRIMARY)?)*)\s*\)
+		"CREATE\\s*TABLE\\s*([a-z][a-z0-9_]*)\\s*\\(((?:\\s*,?\\s*(?:(?:[a-z]|\\d)+) (?:(?:STRING)|(?:DECIMAL)|(?:DECIMAL\\s*\\(([0-9]+)\\)?)|(?:INTEGER(?:\\s*AUTO_INCREMENT)?)|(?:BOOLEAN))(?: PRIMARY)?)*)\\s*\\)",
 		Pattern.CASE_INSENSITIVE
 	);
 
@@ -27,7 +28,8 @@ public class CreateTable implements Driver {
 	private List<String> columnNames;
 	private List<FieldType> columnTypes;
 	private int primaryIndex;
-
+	ArrayList<Boolean> autocols = new ArrayList<Boolean>();
+	ArrayList<Integer> colScales = new ArrayList<Integer>();
 	
 	@Override
 	public boolean parse(String query) throws QueryError {
@@ -71,7 +73,7 @@ public class CreateTable implements Driver {
 				System.out.print(ind[a] + " ");
 			}
 			System.out.println();
-			if(ind.length == 3 && ind[2].toUpperCase().equals("PRIMARY")) {
+			if((ind.length == 3 || ind.length == 4) && ind[ind.length-1].toUpperCase().equals("PRIMARY")) {
 				if(primaryIndex == -1) {
 					primaryIndex = i;
 				}
@@ -93,15 +95,46 @@ public class CreateTable implements Driver {
 			
 			if(ind[1].toUpperCase().equals("INTEGER")) {
 				columnTypes.add(INTEGER);
+				colScales.add(-1);
+				if(ind.length > 2) {
+				if(ind[2].toUpperCase().equals("AUTO_INCREMENT")) {
+					autocols.add(true);
+					
+				}
+			}
+				else {
+					autocols.add(false);
+					
+				}
+				
 			}
 			
 			if(ind[1].toUpperCase().equals("BOOLEAN")) {
 				columnTypes.add(BOOLEAN);
+				autocols.add(false);
+				colScales.add(-1);
 			}
 			
 			if(ind[1].toUpperCase().equals("STRING")) {
 				columnTypes.add(STRING);
+				autocols.add(false);
+				colScales.add(-1);
 			}
+			
+			if(ind[1].toUpperCase().contains("DECIMAL")) {
+				//System.out.println("hi");
+				columnTypes.add(DECIMAL);
+				if(!Objects.equals(matcher.group(3), null)){
+					System.out.println(Integer.parseInt(matcher.group(3)));
+					colScales.add(Integer.parseInt(matcher.group(3)));
+				}
+				else {
+					colScales.add(-1);
+				}
+				autocols.add(false);
+			}
+			
+			
 			
 			
 			//if 3 words and the word at index 2 is PRIMARY:
@@ -145,13 +178,18 @@ public class CreateTable implements Driver {
 		if(db.exists(tableName)) {
 			throw new QueryError("there cannot be duplicate table names");
 		}
+		for(var e: colScales) {
+			System.out.print(e + " ");
+		}
 		//if tableName already exists in the db:
 			//throw an error
 		Table table1 = new HashArrayTable( //TODO: update schema based on the requirements
 				tableName,
 				columnNames,
 				columnTypes,
-				primaryIndex
+				primaryIndex,
+				autocols,
+				colScales
 			);
 		
 		db.create(table1);

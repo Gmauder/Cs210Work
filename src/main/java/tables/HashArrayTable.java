@@ -1,6 +1,7 @@
 package tables;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +15,8 @@ public class HashArrayTable extends PrettyTable {
 	private int size;
 	private int contamination; // OA
 	private int fingerprint;
+	private ArrayList<Boolean> autocols =  new ArrayList<Boolean>();
+	private ArrayList<Integer> colScales =  new ArrayList<Integer>();
 
 	private static final int MIN_CAPACITY = 7; // prime number < 20
 	private static final double LOAD_FACTOR_BOUND = .75; // OA
@@ -33,6 +36,22 @@ public class HashArrayTable extends PrettyTable {
 		setColumnNames(columnNames);
 		setColumnTypes(columnTypes);
 		setPrimaryIndex(primaryIndex);
+		for(String name : columnNames) {
+			autocols.add(false);
+			colScales.add(-1);
+		}
+		setScales(colScales);
+		clear();
+	}
+	
+	public HashArrayTable(String tableName, List<String> columnNames, List<FieldType> columnTypes, int primaryIndex, List<Boolean> Autocols, ArrayList<Integer> scales) {
+		setTableName(tableName);
+		setColumnNames(columnNames);
+		setColumnTypes(columnTypes);
+		setPrimaryIndex(primaryIndex);
+		autocols = (ArrayList<Boolean>) Autocols;
+		System.out.println(scales);
+		setScales(scales);
 
 		clear();
 	}
@@ -51,7 +70,25 @@ public class HashArrayTable extends PrettyTable {
 	@Override
 	public boolean put(List<Object> row) {
 		row = sanitizeRow(row);
-
+		
+		Object oldRows[] = this.rows().toArray();
+		
+		for(var value : row) {
+			//System.out.println(autocols.get(row.indexOf(value)));
+			if(autocols.get(row.indexOf(value))) {
+				//System.out.println(value);
+				if(value == null) {
+					System.out.println(this.rows().size());
+					if(this.rows().size() != 0) {
+						List<Object> prevRow = (List<Object>) oldRows[oldRows.length - 1];
+						row.set(row.indexOf(value), (int) prevRow.get(row.indexOf(value)) + 1);
+					}
+					else {
+						row.set(row.indexOf(value), 0);
+					}
+				}
+			}
+		}
 		Object key = row.get(getPrimaryIndex());
 		final int hash = hashFunction(key);
 
@@ -218,11 +255,15 @@ public class HashArrayTable extends PrettyTable {
 	public int size() {
 		return size;
 	}
+	
+	
 
 	@Override
 	public int capacity() {
 		return array.length;
 	}
+	
+	
 
 	@Override
 	public double loadFactor() { // OA

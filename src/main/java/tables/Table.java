@@ -1,5 +1,7 @@
 package tables;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,6 +22,9 @@ public abstract class Table implements Iterable<List<Object>> {
 	private List<String> columnNames;
 	private List<FieldType> columnTypes;
 	private int primaryIndex;
+	private List<Integer> colScales;
+	
+	
 
 	/**
 	 * Sets the table name in the schema.
@@ -42,6 +47,8 @@ public abstract class Table implements Iterable<List<Object>> {
 		return tableName;
 	}
 
+	
+	
 	/**
 	 * Sets an unmodifiable list of
 	 * the column names in the schema.
@@ -86,7 +93,7 @@ public abstract class Table implements Iterable<List<Object>> {
 		for (int i = 0; i < columnTypes.size(); i++) {
 			FieldType type = columnTypes.get(i);
 			switch (type) {
-				case STRING, INTEGER, BOOLEAN -> {}
+				case STRING, INTEGER, BOOLEAN, DECIMAL -> {}
 				default -> throw new IllegalArgumentException("Unknown type <%s>".formatted(type));
 			}
 		}
@@ -185,6 +192,10 @@ public abstract class Table implements Iterable<List<Object>> {
 				case BOOLEAN -> {
 					if (!(field instanceof Boolean))
 						throw new IllegalArgumentException("Field <%d> must be a boolean".formatted(i));
+				}
+				case DECIMAL -> {
+					if (!(field instanceof BigDecimal))
+						throw new IllegalArgumentException("Field <%d> must be a decimal".formatted(i));
 				}
 				default -> throw new IllegalArgumentException("Unexpected type <%s>".formatted(type));
 			}
@@ -352,4 +363,20 @@ public abstract class Table implements Iterable<List<Object>> {
 			keys.add(row.get(getPrimaryIndex()));
 		return Set.copyOf(keys);
 	}
+
+	
+	
+	
+	public void setScales(ArrayList<Integer> colScales) {
+		// TODO Auto-generated method stub
+		this.colScales = List.copyOf(colScales);
+		System.out.println(this.colScales);
+		System.out.println(colScales);
+		
+	}
+	public List<Integer> getScales() {
+		// TODO Auto-generated method stub
+		System.out.println(colScales);
+		return colScales;
+}
 }

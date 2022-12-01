@@ -17,6 +17,7 @@ import drivers.DropColumn;
 import drivers.DropTable;
 import drivers.Echo;
 import drivers.InsertInto;
+import drivers.LikeTable;
 import drivers.Macros;
 import drivers.ModifyPrimary;
 import drivers.Range;
@@ -24,6 +25,7 @@ import drivers.RenameColumn;
 import drivers.RenameTable;
 import drivers.ShowTable;
 import drivers.ShowTables;
+import drivers.TruncateName;
 import sql.Driver;
 import sql.QueryError;
 import tables.SearchTable;
@@ -203,6 +205,14 @@ public class Database implements Closeable {
 		Driver insert = new InsertInto();
 		if (insert.parse(query))
 			return insert.execute(this);
+		
+		Driver like = new LikeTable();
+		if (like.parse(query))
+			return like.execute(this);
+		
+		Driver truncate = new TruncateName();
+		if (truncate.parse(query))
+			return truncate.execute(this);
 		
 		Driver macro = new Macros();
 		if (macro.parse(query))

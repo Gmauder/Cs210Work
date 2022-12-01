@@ -1,6 +1,5 @@
 package drivers;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ import tables.Table;
  * ECHO "Hello, world!"
  * 	 -> string: Hello, world!
  */
-public class InsertInto implements Driver {
+public class InsertMany implements Driver {
 	private static final Pattern queryPattern = Pattern.compile(
 			//sanitizes the keywords, table name, column names, stuff (for literals)
 			// group 1: keyword
@@ -26,27 +25,19 @@ public class InsertInto implements Driver {
 			//3: column names list (or null)
 			//4: literal values list (which hasn't been sanitized)
 		//old//(INSERT|REPLACE)\s*INTO\s*([a-z][a-z0-9_]*)\s*(?:\(((?:(?:[a-z][a-z0-9_]*,?)\s*)*)\))?\s*VALUES\s*\(((?:[a-z0-9_\\"]+,?\s*)*)\)
-			//(INSERT|REPLACE)\s*INTO\s*([a-z][a-z0-9_]*)\s*(?:\(((?:(?:[a-z][a-z0-9_]*,?)\s*)*)\))?\s*VALUES\s*((?:\((?:(?:[ !?\-+a-z0-9_.\\"]+,?\s*)*)\)\s*,?\s*)+)
-		"(INSERT|REPLACE)\\s*INTO\\s*([a-z][a-z0-9_]*)\\s*(?:\\(((?:(?:[a-z][a-z0-9_]*,?)\\s*)*)\\))?\\s*VALUES\\s*((?:\\((?:(?:[ !?\\-+a-z0-9_.\\\\\"]+,?\\s*)*)\\)\\s*,?\\s*)+)",
+			//(INSERT|REPLACE)\s*INTO\s*([a-z][a-z0-9_]*)\s*(?:\(((?:(?:[a-z][a-z0-9_]*,?)\s*)*)\))?\s*VALUES\s*((?:\((?:(?:[ !?\-+a-z0-9_\\"]+,?\s*)*)\),?\s*)+)
+		"(INSERT|REPLACE)\\s*INTO\\s*([a-z][a-z0-9_]*)\\s*(?:\\(((?:(?:[a-z][a-z0-9_]*,?)\\s*)*)\\))?\\s*VALUES\\s*((?:\\((?:(?:[ !?\\-+a-z0-9_\\\\\"]+,?\\s*)*)\\),?\\s*)+)",
 		Pattern.CASE_INSENSITIVE
 	);
 	
 	private static final Pattern literalPattern = Pattern.compile(
 			//string format|integer format|boolean format|null format
 			//each of which has a capture group
-		//"([^"]*)"|([-0-9]+\.[0-9]+)|(?:\+)?([-0-9]+)|(true|false)|(null)
-		"\"([^\"]*)\"|([-0-9]+\\.[0-9]+)|(?:\\+)?([-0-9]+)|(true|false)|(null)",
+		//"([^"]*)"|(?:\+)?([-0-9]+)|(true|false)|(null)
+		"\"([^\"]*)\"|(?:\\+)?([-0-9]+)|(true|false)|(null)",
 		Pattern.CASE_INSENSITIVE
 	);
 
-	
-	
-//	private static final Pattern valuesPattern = Pattern.compile(
-			
-		//,?\s*\(?((?:(?:[ !?\-+a-z0-9_.\\"]+,?)+))\)?
-	//	",?\\s*\\(?((?:(?:[ !?\\-+a-z0-9_.\\\\\"]+,?)+))\\)?",
-	//	Pattern.CASE_INSENSITIVE
-	//);
 	//group1: insert vs replace
 	//mode which supports duplicate keys (replace)
 	//mode which does not (insert)
@@ -66,9 +57,9 @@ public class InsertInto implements Driver {
 	//field for table name
 	String tName;
 	//field for the literal values(array of strings)
-	String[]rowValues;
-	
 	String[] litValues;
+	
+	String[] rowValues;
 	//field for the column names(array of strings)
 	String[] litTypes;
 	
@@ -113,16 +104,11 @@ public class InsertInto implements Driver {
 		//split group 4 on commas into a field for the literal values
 		//eg. [""A"","1","true"] (raw characters for each
 	
-		String temp = matcher.group(4);
-		rowValues = temp.split("\\)\\s*,\\s*\\(");
-		rowValues[0] = rowValues[0].replaceFirst("\\(", " ");
-		rowValues[rowValues.length - 1] = rowValues[rowValues.length - 1].replaceFirst("\\)", " ");
-		for(int i = 0; i < rowValues.length; i++) {
-			rowValues[i] = rowValues[i].strip();
-			//litValues.add()
+		rowValues = matcher.group(4).split(")");
+		for(var value : litValues) {
+			
 		}
 		
-		//System.out.println(rowValues);
 		
 
 		return true;
@@ -137,12 +123,10 @@ public class InsertInto implements Driver {
 		}
 		List<String> columnNames = table.getColumnNames();
 		List<FieldType> columnTypes = table.getColumnTypes();
-		List<Integer> scales = table.getScales();
 		int prime = table.getPrimaryIndex();
 		
 		//Phase 1 - find a correspondence between
 		//col names in the query and col names in the schema
-		
 		ArrayList<Integer> pointerList = new ArrayList<Integer>();
 		//if short form:
 		if(isShort) {
@@ -184,7 +168,9 @@ public class InsertInto implements Driver {
 		//		if the primary index isnt contained in the pointers list: throw a query error
 		
 		//Phase 2:
-		
+		if(litValues.length != pointerList.size()) {
+			throw new QueryError("There are a different number of values and columns");
+		}
 		// based on the correspondence already found
 		
 		
@@ -193,16 +179,6 @@ public class InsertInto implements Driver {
 		
 		//initialize a counter for the number of rows to 0
 	int rowCounter = 0;
-	for(int a = 0; a < rowValues.length; a++) {
-		System.out.println(rowValues[a]);
-		//Matcher valMatcher = valuesPattern.matcher(rowValues[a]);
-		//System.out.println(valMatcher.group(1).toString());
-		litValues = rowValues[a].split(",");
-		
-		if(litValues.length != pointerList.size()) {
-			throw new QueryError("There are a different number of values and columns");
-		}
-		
 	//make a new empty row and fill it with nulls up to the number of columns in the schema
 	ArrayList<Object> nRow = new ArrayList<Object>();
 	ArrayList<Object> rowList = new ArrayList<Object>();
@@ -212,8 +188,6 @@ public class InsertInto implements Driver {
 	}
 	int ncount = 0;
 	//for each index i (for each name that comes from the query)
-	
-	
 	for(String n : colNames)
 	{
 	
@@ -222,8 +196,6 @@ public class InsertInto implements Driver {
 	FieldType type = columnTypes.get(j);
 	String litValue = litValues[ncount];
 	ncount++;
-	
-	
 	for(int i = 0; i < litValues.length; i++){
 		litValues[i] = litValues[i].strip();
 	}
@@ -252,41 +224,22 @@ public class InsertInto implements Driver {
 			}
 			result = litMatcher.group(1);
 		}
-		
-		else if(!Objects.equals(litMatcher.group(2), null) && type.equals(DECIMAL)){
-			result = new BigDecimal(litMatcher.group(2));
-			
-			
-			System.out.println(scales.size() + "j");
-			System.out.println(scales);
-			if(scales.get(ncount-2) != -1) {
-				System.out.println("hi");
-				System.out.println(litMatcher.group(2));
-				
-				result = new BigDecimal(litMatcher.group(2)).setScale(scales.get(ncount-2));
-				System.out.println(result);
-			}
-			else {
-				System.out.println(litMatcher.group(2));
-				result = new BigDecimal(litMatcher.group(2));
-			}
-		}
 	//	if the literal value matches string AND the schema type is also string
 	//		if the string is too long throw a query error
 	//		just use your regex with a capture group that doesnt include quotation marks to get the non-quoted chars
 	//		assign the string as the local variable for the resulting value
-		else if(!Objects.isNull(litMatcher.group(3)) && type.equals(INTEGER)) {
+		else if(!Objects.equals(litMatcher.group(2), null) && type.equals(INTEGER)) {
 			
 			try
 		    {   
-		       result = Integer.parseInt(litMatcher.group(3));
+		       result = Integer.parseInt(litMatcher.group(2));
 		           
 		    }
 		    catch(Exception e)
 		    {
 		        throw new QueryError("Literal cannot be parsed as an int");
 		    }
-				if(litMatcher.group(3).charAt(0) == '0' && litMatcher.group(3).length() > 1) {
+				if(litMatcher.group(2).charAt(0) == '0' && litMatcher.group(2).length() > 1) {
 					throw new QueryError("Integer can not start with 0");
 				}
 			
@@ -295,10 +248,10 @@ public class InsertInto implements Driver {
 	//		parse the literal as an integer (even if it has a sign) if it cant be parsed throw a query error
 	//		assign the parsed integer as the local variable for the resulting value (Integer Object)
 		
-		else if((!Objects.equals(litMatcher.group(4), null)) && type.equals(BOOLEAN)) {
+		else if((!Objects.equals(litMatcher.group(3), null)) && type.equals(BOOLEAN)) {
 			try
 		    {   
-		       result = Boolean.parseBoolean(litMatcher.group(4));
+		       result = Boolean.parseBoolean(litMatcher.group(3));
 		           
 		    }
 		    catch(Exception e)
@@ -306,7 +259,7 @@ public class InsertInto implements Driver {
 		        throw new QueryError("Literal cannot be parsed as an boolean");
 		    }
 		}
-		else if(Objects.equals(litMatcher.group(5), "null")) {
+		else if(Objects.equals(litMatcher.group(3), "null")) {
 			result = null;
 		}
 		else {
@@ -329,35 +282,26 @@ public class InsertInto implements Driver {
 		
 	//			
 		for(var row: table.rows()) {
-			//System.out.println(isInsert);
-			//System.out.println(row.get(0));
-			//System.out.println(result.toString());
-			
-		
-		if(isInsert && Objects.equals(row.get(0), (result))) {
+			System.out.println(isInsert);
+			System.out.println(row.get(0));
+			System.out.println(result.toString());
+		if(isInsert && row.get(0).equals(result.toString())) {
 			
 			//keys are primary index of each row
 			
 			throw new QueryError("the table already contains that value");
 		}
 		}
-	
 	//		if we are in insert mode AND the table already contains the value as one of its row keys:
 	//			throw a query error
 		nRow.set(j, result);
 	//	assign the jth element of the row to have the resulting value that we sanitized
+	}
 	
-	}
-	var rows = new ArrayList<>(table.rows());
-	for(var row: rows) {
-	if(isInsert && nRow.get(prime).equals(row.get(prime))) {
-		throw new QueryError("the table already contains that value");
-	}
-			
-	}
+	
 			table.put(nRow);
 			rowCounter++;
-	}
+	
 	//	put the row in the table 
 	//	add 1 to the rows counter
 	

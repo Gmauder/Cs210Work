@@ -258,6 +258,50 @@ public abstract class PrettyTable extends Table {
 						}
 					}
 					}
+					else if(colTypes.get(x) == FieldType.DECIMAL) {
+						if(tempList.get(x) != null) {
+							if(tempList.get(x).toString().length() < maxLength) {
+								for(int n = 0; n < (maxLength - tempList.get(x).toString().length()) - 1; n ++) {
+									sb.append(" ");
+								}
+							
+							sb.append(tempList.get(x));
+							
+							//for(int n = tempList.get(x).toString().length(); n < maxLength - 1; n ++) {
+								//sb.append(" ");
+							//}
+							}
+							else {
+								//sb.append("  ");
+								sb.append(tempList.get(x).toString().substring(0, maxLength - 7));
+								sb.append("...");
+								sb.append("   ");
+								
+							}
+							
+							if(x != tempList.size() - 1) {
+								sb.append(" |");
+							}
+							}
+						
+					
+					else {
+						for(int v = 4; v < maxLength-1; v++) {
+						sb.append(" ");
+						}
+						
+						sb.append("    ");
+						
+						
+						
+						//for(int n = (4 + ((maxLength - 4) / 2)); n < maxLength - 1; n ++) {
+						//		sb.append(" ");
+						//	}
+						if(x != tempList.size() - 1) {
+							sb.append(" |");
+						}
+					}
+					}
 					
 				}
 				sb.append("|");

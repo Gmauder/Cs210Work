@@ -9,8 +9,14 @@ package sql;
 public enum FieldType {
 	STRING(1),
 	INTEGER(2),
-	BOOLEAN(3);
-
+	BOOLEAN(3),
+	DECIMAL(4);
+	
+	
+	
+	
+	
+	
 	private int type;
 
 	private FieldType(int type) {
