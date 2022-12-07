@@ -125,7 +125,7 @@ public class CreateTable implements Driver {
 				//System.out.println("hi");
 				columnTypes.add(DECIMAL);
 				if(!Objects.equals(matcher.group(3), null)){
-					System.out.println(Integer.parseInt(matcher.group(3)));
+					//System.out.println(Integer.parseInt(matcher.group(3)));
 					colScales.add(Integer.parseInt(matcher.group(3)));
 				}
 				else {

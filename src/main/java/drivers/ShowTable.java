@@ -14,7 +14,7 @@ import tables.Table;
  */
 public class ShowTable implements Driver {
 	private static final Pattern pattern = Pattern.compile(
-		"SHOW\\s+TABLE\\s+([a-z][a-z0-9_]*)",
+		"SHOW\\s+TABLE\\s+([a-z_][a-z0-9_]*)",
 		Pattern.CASE_INSENSITIVE
 	);
 

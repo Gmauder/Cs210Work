@@ -50,7 +50,7 @@ public class Sandbox {
 			table2.put(List.of("tau", 19, false));
 			table2.put(List.of("pi", 16, false));
 			table2.put(List.of("omega", 24, true));
-			table2.put(Arrays.asList("N/A", null, null));
+			//table2.put(Arrays.asList("N/A", null, null));
 
 			System.out.println(table2);
 			

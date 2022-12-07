@@ -12,6 +12,7 @@ import java.util.List;
 
 import drivers.AddColumn;
 import drivers.CreateTable;
+import drivers.DeleteRow;
 import drivers.DescribeTable;
 import drivers.DropColumn;
 import drivers.DropTable;
@@ -23,9 +24,12 @@ import drivers.ModifyPrimary;
 import drivers.Range;
 import drivers.RenameColumn;
 import drivers.RenameTable;
+import drivers.SelectFrom;
+import drivers.SelectTable;
 import drivers.ShowTable;
 import drivers.ShowTables;
 import drivers.TruncateName;
+import drivers.UpdateColumn;
 import sql.Driver;
 import sql.QueryError;
 import tables.SearchTable;
@@ -205,6 +209,22 @@ public class Database implements Closeable {
 		Driver insert = new InsertInto();
 		if (insert.parse(query))
 			return insert.execute(this);
+		
+		Driver select = new SelectFrom();
+		if (select.parse(query))
+			return select.execute(this);
+		
+		Driver stable = new SelectTable();
+		if (stable.parse(query))
+			return stable.execute(this);
+		
+		Driver updatec = new UpdateColumn();
+		if (updatec.parse(query))
+			return updatec.execute(this);
+		
+		Driver deleterow = new DeleteRow();
+		if (deleterow.parse(query))
+			return deleterow.execute(this);
 		
 		Driver like = new LikeTable();
 		if (like.parse(query))

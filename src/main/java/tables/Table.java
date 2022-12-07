@@ -370,13 +370,13 @@ public abstract class Table implements Iterable<List<Object>> {
 	public void setScales(ArrayList<Integer> colScales) {
 		// TODO Auto-generated method stub
 		this.colScales = List.copyOf(colScales);
-		System.out.println(this.colScales);
-		System.out.println(colScales);
+		//System.out.println(this.colScales);
+		//System.out.println(colScales);
 		
 	}
 	public List<Integer> getScales() {
 		// TODO Auto-generated method stub
-		System.out.println(colScales);
+		//System.out.println(colScales);
 		return colScales;
 }
 }
