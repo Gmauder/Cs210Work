@@ -200,7 +200,7 @@ public class UpdateColumn implements Driver {
 					else if(oper.equals("<")) {
 						if(compnum >= 0) {
 							rowFlag = false;
-						}
+						} 
 					}
 					else if(oper.equals(">")) {
 						if(compnum <= 0) {
