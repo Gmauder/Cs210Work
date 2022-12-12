@@ -24,8 +24,8 @@ import tables.Table;
  */
 public class UpdateColumn implements Driver {
 	private static final Pattern pattern = Pattern.compile(
-			//UPDATE\s+([a-z0-9_]+)\s+SET\s+([a-z0-9_]+)\s+=\s+([a-z0-9]+)(\s+WHERE\s*([a-z0-9_]+)\s*(<|<>|>|=|>=|<=)\s*([a-z0-9"]+))?
-		"UPDATE\\s+([a-z0-9_]+)\\s+SET\\s+([a-z0-9_]+)\\s+=\\s+([a-z0-9]+)(\\s+WHERE\\s*([a-z0-9_]+)\\s*(<|<>|>|=|>=|<=)\\s*([a-z0-9\"]+))?",
+			//UPDATE\s+([a-z0-9_]+)\s+SET\s+([a-z0-9_]+)\s+=\s+([a-z0-9"]+)(\s+WHERE\s*([a-z0-9_]+)\s*(<|<>|>|=|>=|<=)\s*([a-z0-9"]+))?
+		"UPDATE\\s+([a-z0-9_]+)\\s+SET\\s+([a-z0-9_]+)\\s+=\\s+([a-z0-9\"]+)(\\s+WHERE\\s*([a-z0-9_]+)\\s*(<|<>|>|=|>=|<=)\\s*([a-z0-9\"]+))?",
 		Pattern.CASE_INSENSITIVE
 	);
 

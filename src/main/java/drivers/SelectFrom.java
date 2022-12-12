@@ -159,6 +159,9 @@ public class SelectFrom implements Driver {
 					newprime
 				);
 		}
+		if(db.exists("_select")) {
+			db.drop("_select");
+		}
 			db.create(resultSet);
 		// Phase 1 - find a correspondence between
 		// col names in the query and col names in the schema

@@ -60,7 +60,7 @@ public class DeleteRow implements Driver {
 		Table resultSet;
 		
 		Table table = db.find(tableName);
-		int numrows = 0;
+		
 		List<String> columnNames = List.copyOf(table.getColumnNames());
 		List<FieldType> columnTypes = List.copyOf(table.getColumnTypes());
 		int prime = table.getPrimaryIndex();
@@ -79,6 +79,7 @@ public class DeleteRow implements Driver {
 		List<FieldType>colTypes = new ArrayList<FieldType>();
 		
 		var rows = new ArrayList<>(table.rows());
+		int numrows = rows.size();
 		
 		int lIndex = 0;
 		FieldType lType = null;
@@ -261,8 +262,9 @@ public class DeleteRow implements Driver {
 				if(rowFlag == false) {
 					System.out.println(temp);
 					resultSet.put(temp);
-					numrows++;
+					numrows--;
 				}
+				
 	
 }
 		
