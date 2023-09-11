@@ -49,8 +49,8 @@ public class Database implements Closeable {
 
 	private final List<Table> tables;
 	private final boolean persistent;
-
-	/**
+ 
+	/** 
 	 * Initializes the tables.
 	 *
 	 * @param persistent whether the database is persistent.
