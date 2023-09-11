@@ -35,7 +35,7 @@ public class SearchTable extends PrettyTable {
 		setPrimaryIndex(primaryIndex);
 
 		tree = new TreeMap<>();
-		clear();
+		clear(); 
 	}
 
 	@Override
