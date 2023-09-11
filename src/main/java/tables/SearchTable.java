@@ -17,7 +17,7 @@ public class SearchTable extends PrettyTable {
 	//Map : { key: value, key: value, key: value}
 	//Map : { "A": 1, "B": 2, "C": 3}
 	private Map<Object, List<Object>> tree;
-	private int fingerprint;
+	private int fingerprint; 
 
 	/**
 	 * Creates a table and initializes
